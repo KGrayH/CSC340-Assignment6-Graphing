@@ -97,19 +97,19 @@ int main() {
     // Separate DAG graph for topological sort
     Graph dag;
 
-    User d1("Intro", "intro@email.com", "pass1", "DAG node 1", "intro.jpg");
+    User d1("Intro", "intro@email.com", "pass1", "DAG node 1", "intro.jpg"); // This is the starting node for topological sort
     User d2("Design", "design@email.com", "pass2", "DAG node 2", "design.jpg");
     User d3("Code", "code@email.com", "pass3", "DAG node 3", "code.jpg");
     User d4("Test", "test@email.com", "pass4", "DAG node 4", "test.jpg");
     User d5("Submit", "submit@email.com", "pass5", "DAG node 5", "submit.jpg");
 
-    d1.setId(1);
+    d1.setId(1); // Assign IDs for graph vertices
     d2.setId(2);
     d3.setId(3);
     d4.setId(4);
     d5.setId(5);
 
-    dag.addUser(d1);
+    dag.addUser(d1); // Add users to DAG graph
     dag.addUser(d2);
     dag.addUser(d3);
     dag.addUser(d4);
@@ -122,7 +122,7 @@ int main() {
     dag.addFollowEdge(3, 4, 1);
     dag.addFollowEdge(4, 5, 1);
 
-    dag.displayGraph();
+    dag.displayGraph(); // Display DAG graph
     dag.topologicalSort(1);
     return 0;
 }

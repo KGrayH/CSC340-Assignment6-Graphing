@@ -228,13 +228,13 @@ void Graph::bellmanFord(int startId) {
     for (const auto& edgeList : adjList) {     // 4. Detect negative cycle
         int followerId = edgeList.first;
 
-        for (const auto& edge : edgeList.second) {
+        for (const auto& edge : edgeList.second) { // check if we can still relax any edge, which would indicate a negative cycle
             int followeeId = edge.first;
             int weight = edge.second;
 
-            if (dist[followerId] != INT_MAX &&
+            if (dist[followerId] != INT_MAX && // if we can still relax an edge, then there is a negative weight cycle in the graph
                 dist[followerId] + weight < dist[followeeId]) {
-                cout << "graph contains negative weight cycle" << endl;
+                cout << "graph contains negative weight cycle" << endl; 
                 return;
             }
         }
@@ -242,7 +242,7 @@ void Graph::bellmanFord(int startId) {
 
     //print results
     cout << "\nBellman-Ford shortest paths from User "
-         << startId << " (" << users[startId].getUsername() << "):" << endl;
+         << startId << " (" << users[startId].getUsername() << "):" << endl; // print user names and distances
 
     for (const auto& userPair : users) {
         int userId = userPair.first;
@@ -250,11 +250,11 @@ void Graph::bellmanFord(int startId) {
         cout << "To User " << userId
              << " (" << userPair.second.getUsername() << "): ";
 
-        if (dist[userId] == INT_MAX) {
-            cout << "unreachable";
+        if (dist[userId] == INT_MAX) { // if distance is still INT_MAX, it means the user is not reachable from the start user
+            cout << "not reachable";
         }
         else {
-            cout << "distance = " << dist[userId];
+            cout << "distance = " << dist[userId]; // otherwise, print the distance
         }
 
         cout << endl;
@@ -269,15 +269,15 @@ void Graph::topologicalSort(int startId) {
     unordered_map<int, int> inDegree;
 
     //init every user with 0
-    for (const auto& userPair : users) {
+    for (const auto& userPair : users) { // initialize in-degree of all users to 0
         inDegree[userPair.first] = 0;
     }
 
     //xount incoming edges for each user
     for (const auto& edgeList : adjList) {
-        for (const auto& edge : edgeList.second) {
+        for (const auto& edge : edgeList.second) { // for each edge, increment the in-degree of the neighbor (followee)
             int neighborId = edge.first;
-            inDegree[neighborId]++;
+            inDegree[neighborId]++; // increment in-degree for the neighbor (followee)
         }
     }
 
@@ -286,7 +286,7 @@ void Graph::topologicalSort(int startId) {
 
     for (const auto& degreePair : inDegree) {
         if (degreePair.second == 0) {
-            q.push(degreePair.first);
+            q.push(degreePair.first); // enqueue users with in-degree 0 (no dependencies)
         }
     }
 
@@ -294,17 +294,17 @@ void Graph::topologicalSort(int startId) {
     vector<int> topoOrder;
 
     while (!q.empty()) {
-        int current = q.front();
+        int current = q.front(); // get the next user with in-degree 0
         q.pop();
 
-        topoOrder.push_back(current);
+        topoOrder.push_back(current); // add the current user to the topological order
 
         for (const auto& neighbor : adjList[current]) {
             int neighborId = neighbor.first;
 
             inDegree[neighborId]--;
 
-            if (inDegree[neighborId] == 0) {
+            if (inDegree[neighborId] == 0) { // if in-degree becomes 0, add to queue
                 q.push(neighborId);
             }
         }
@@ -312,11 +312,11 @@ void Graph::topologicalSort(int startId) {
 
     // 4. Print user names in topological order
     if (topoOrder.size() != users.size()) {
-        cout << "Topological sort not possible. Graph contains a cycle." << endl;
+        cout << "Topological sort not possible, graph contains cycle" << endl;
         return;
     }
 
-    cout << "Topological Sort Order: ";
+    cout << "Topological sort order: ";
 
     for (int userId : topoOrder) {
         cout << users[userId].getUsername() << " ";
