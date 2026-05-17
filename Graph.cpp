@@ -1,8 +1,10 @@
 #include "Graph.h"
+
 #include <iostream>
 #include <queue>
 #include <set>
 #include <climits>
+#include <functional>
 
 using namespace std;
 
@@ -20,42 +22,24 @@ void Graph::addFollowEdge(int followerId, int followeeId, int weight) {
 }
 
 // display the adjacency list of the graph - all users and their neighbors
-void Graph::displayGraph() const { // const matches Graph.h
-    if (users.empty()) {
-        cout << "Graph empty" << endl;
-        return;
-    }
+void Graph::displayGraph() const {
 
-    cout << "\nGraph Adjacency List" << endl;
+    for (const auto& userPair : adjList) {
 
-    for (const auto& userPair : users) {
         int userId = userPair.first;
 
-        cout << "User " << userId
-             << " (" << userPair.second.getUsername() << ") follows: ";
+        cout << users.at(userId).getUsername() << " -> ";
 
-        auto it = adjList.find(userId);
+        for (const auto& neighbor : userPair.second) {
 
-        if (it == adjList.end() || it->second.empty()) {
-            cout << "nobody";
-        }
-        else {
-            for (const auto& neighbor : it->second) {
-                int followeeId = neighbor.first;
-                int weight = neighbor.second;
+            int neighborId = neighbor.first;
+            int weight = neighbor.second;
 
-                cout << "(";
-
-                auto userIt = users.find(followeeId);
-                if (userIt != users.end()) {
-                    cout << userIt->second.getUsername();
-                }
-                else {
-                    cout << "User " << followeeId;
-                }
-
-                cout << ", weight: " << weight << ") ";
-            }
+            cout << "("
+                 << users.at(neighborId).getUsername()
+                 << ", weight: "
+                 << weight
+                 << ") ";
         }
 
         cout << endl;
@@ -142,6 +126,65 @@ void Graph::dijkstra(int startId) {
     // 2. Initialize all distances to INT_MAX
     // 3. Use priority_queue<pair<int,int>>
     // 4. Relax edges
+
+    if (users.find(startId) == users.end()) {
+        cout << "User does not exist." << endl;
+        return;
+    }
+
+    unordered_map<int, int> dist;
+
+    for (const auto& userPair : users) {
+        dist[userPair.first] = INT_MAX;
+    }
+
+    dist[startId] = 0;
+
+    priority_queue<pair<int, int>,
+                   vector<pair<int, int>>,
+                   greater<pair<int, int>>> pq;
+
+    pq.push({0, startId});
+
+    while (!pq.empty()) {
+        int currentDist = pq.top().first;
+        int currentUserId = pq.top().second;
+        pq.pop();
+
+        if (currentDist > dist[currentUserId]) {
+            continue;
+        }
+
+        for (const auto& neighbor : adjList[currentUserId]) {
+            int neighborId = neighbor.first;
+            int weight = neighbor.second;
+
+            if (dist[currentUserId] != INT_MAX &&
+                dist[currentUserId] + weight < dist[neighborId]) {
+
+                dist[neighborId] = dist[currentUserId] + weight;
+                pq.push({dist[neighborId], neighborId});
+            }
+        }
+    }
+
+    cout << "Dijkstra shortest paths starting from "
+         << users[startId].getUsername()
+         << ":" << endl;
+
+    for (const auto& userPair : users) {
+        int userId = userPair.first;
+
+        cout << users[userId].getUsername() << ": ";
+
+        if (dist[userId] == INT_MAX) {
+            cout << "Unreachable";
+        } else {
+            cout << dist[userId];
+        }
+
+        cout << endl;
+    }
 }
 
 // the Bellman-Ford algorithm to find the shortest paths from the user with startUserId to all other users.

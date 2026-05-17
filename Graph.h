@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <vector>
 #include <utility>
-#include "User.h" // Use your actual path to the User class header file
+#include "User.h"
 
 using namespace std;
 
@@ -28,18 +28,18 @@ public:
     void addFollowEdge(int followerId, int followeeId, int weight);
 
     // Traversals
-    void bfsSearch(int startUserId);        // this method will perform a breadth-first search starting from the user with startUserId and print the visited users in order.
-    void dfsSearch(int startUserId);        // this method will perform a depth-first search starting from the user with startUserId and print the visited users in order.
+    void bfsSearch(int startUserId);
+    void dfsSearch(int startUserId);
 
     // Shortest Paths
-    void dijkstra(int startUserId);         // this method will find the shortest paths from the user with startUserId to all other users.
-    void bellmanFord(int startUserId);      // this method will find the shortest paths from the user with startUserId to all other users.
+    void dijkstra(int startUserId);
+    void bellmanFord(int startUserId);
 
     // Toplogical Sort
     void topologicalSort(int startId);
 
     // Utility
-    void displayGraph() const; //match graph.cpp                   // this method will display the adjacency list of the graph.
+    void displayGraph() const;
 };
 
 #endif
