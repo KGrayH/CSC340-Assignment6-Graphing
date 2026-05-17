@@ -1,4 +1,5 @@
 #include "Graph.h"
+#include <iostream>
 
 
 using namespace std;
@@ -17,7 +18,45 @@ void Graph::addFollowEdge(int followerId, int followeeId, int weight) {
 }
 
 // display the adjacency list of the graph - all users and their neighbors
-void Graph::displayGraph() const { }
+void Graph::displayGraph() const { //match graph.cpp
+    if (users.empty()) {
+        cout << "Graph empty" << endl;
+        return;
+    }
+
+    cout << "\nGraph Adjacency List" << endl; //print user with followed
+
+    for (const auto& userPair : users) { //looping time :P pair includes userId and object
+        int userId = userPair.first;
+
+        cout << "User " << userId
+             << " ( " << userPair.second.getUsername() << ") follows: ";
+
+        auto it = adjList.find(userId); //look for user in list
+
+        if (it == adjList.end() || it->second.empty()) { // no neighbors
+            cout << "nobody";
+        }
+        else {
+
+            for (const auto& neighbor : it->second) { //print all
+                int followeeId = neighbor.first;
+                int weight = neighbor.second;
+
+                cout << followeeId;
+
+                auto userIt = users.find(followeeId); //print username if it exists
+                if (userIt != users.end()) {
+                    cout << " (" << userIt->second.getUsername() << ")";
+                }
+
+                cout << " weight: " << weight << "; ";
+            }
+        }
+
+        cout << endl;
+    }
+}
 
 void Graph::bfsSearch(int startId) {
     // TODO:
