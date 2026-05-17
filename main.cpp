@@ -9,7 +9,6 @@ int main() {
     Graph g;
 
     // Create graph
-
     // 10 user objects
     User u1("WindTell", "Windtell@gmail.com", "pass1", "Windtell bio", "Windtell.jpg");
     User u2("Hensley", "Hensley@gmail.com", "pass2", "Hensley bio", "Hensley.jpg");
@@ -93,6 +92,37 @@ int main() {
     cout << endl;
 
     // Part-V - Run Topological Sort on the graph
+    cout << "Topological Sort" << endl;
 
+    // Separate DAG graph for topological sort
+    Graph dag;
+
+    User d1("Intro", "intro@email.com", "pass1", "DAG node 1", "intro.jpg");
+    User d2("Design", "design@email.com", "pass2", "DAG node 2", "design.jpg");
+    User d3("Code", "code@email.com", "pass3", "DAG node 3", "code.jpg");
+    User d4("Test", "test@email.com", "pass4", "DAG node 4", "test.jpg");
+    User d5("Submit", "submit@email.com", "pass5", "DAG node 5", "submit.jpg");
+
+    d1.setId(1);
+    d2.setId(2);
+    d3.setId(3);
+    d4.setId(4);
+    d5.setId(5);
+
+    dag.addUser(d1);
+    dag.addUser(d2);
+    dag.addUser(d3);
+    dag.addUser(d4);
+    dag.addUser(d5);
+
+    //DAG edges: no cycles
+    dag.addFollowEdge(1, 2, 1);
+    dag.addFollowEdge(1, 3, 1);
+    dag.addFollowEdge(2, 4, 1);
+    dag.addFollowEdge(3, 4, 1);
+    dag.addFollowEdge(4, 5, 1);
+
+    dag.displayGraph();
+    dag.topologicalSort(1);
     return 0;
 }

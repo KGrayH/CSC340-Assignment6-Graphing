@@ -265,9 +265,67 @@ void Graph::bellmanFord(int startId) {
 // Please refer to the assignment document for the DAG graph that will be used for testing this method.
 // Keep in mind that you will need to build the DAG graph in the main function and then call this method to test it.
 void Graph::topologicalSort(int startId) {
+    // 1. Compute in-degrees
+    unordered_map<int, int> inDegree;
+
+    //init every user with 0
+    for (const auto& userPair : users) {
+        inDegree[userPair.first] = 0;
+    }
+
+    //xount incoming edges for each user
+    for (const auto& edgeList : adjList) {
+        for (const auto& edge : edgeList.second) {
+            int neighborId = edge.first;
+            inDegree[neighborId]++;
+        }
+    }
+
+    // 2. Use queue<int> for vertices with in-degree 0
+    queue<int> q;
+
+    for (const auto& degreePair : inDegree) {
+        if (degreePair.second == 0) {
+            q.push(degreePair.first);
+        }
+    }
+
+    // 3. Process vertices and update in-degrees
+    vector<int> topoOrder;
+
+    while (!q.empty()) {
+        int current = q.front();
+        q.pop();
+
+        topoOrder.push_back(current);
+
+        for (const auto& neighbor : adjList[current]) {
+            int neighborId = neighbor.first;
+
+            inDegree[neighborId]--;
+
+            if (inDegree[neighborId] == 0) {
+                q.push(neighborId);
+            }
+        }
+    }
+
+    // 4. Print user names in topological order
+    if (topoOrder.size() != users.size()) {
+        cout << "Topological sort not possible. Graph contains a cycle." << endl;
+        return;
+    }
+
+    cout << "Topological Sort Order: ";
+
+    for (int userId : topoOrder) {
+        cout << users[userId].getUsername() << " ";
+    }
+
+    cout << endl;
+}
     // TODO:
     // 1. Compute in-degrees
     // 2. Use queue<int> for vertices with in-degree 0
     // 3. Process vertices and update in-degrees
     // 4. Print user names in topological order
-}
