@@ -19,8 +19,12 @@ private:
     // userId -> list of (neighborId, weight)
     unordered_map<int, vector<pair<int,int>>> adjList;
 
+    // Helper function for recursive DFS traversal
+    void dfsHelper(int currentUserId, unordered_map<int, bool>& visited);
+
 public:
     void addUser(const User& user);          //add new user to graph
+
     // Graph edges (follow relationships)
     void addFollowEdge(int followerId, int followeeId, int weight);
 
