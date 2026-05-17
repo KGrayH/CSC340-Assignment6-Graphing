@@ -40,7 +40,7 @@ public:
     void topologicalSort(int startId);
 
     // Utility
-    void displayGraph();                    // this method will display the adjacency list of the graph.
+    void displayGraph() const;                    // this method will display the adjacency list of the graph.
 };
 
 #endif
