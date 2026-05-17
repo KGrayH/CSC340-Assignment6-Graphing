@@ -1,6 +1,5 @@
 #ifndef GRAPH_H
 #define GRAPH_H
-
 #include <unordered_map>
 #include <vector>
 #include <utility>

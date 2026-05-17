@@ -67,6 +67,7 @@ int main() {
 
     //display finished adjacency list
     g.displayGraph();
+    g.bellmanFord(1); //finding shortest paths from user 1 to all other users using Bellman-Ford algorithm
 
     //Part-I - Create/Build and display graph g. The 'displayGraph' method should be called to complete this task
     //Part-II - Run DFS traversal on the graph

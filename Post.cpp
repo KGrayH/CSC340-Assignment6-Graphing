@@ -80,6 +80,9 @@ void Post::displayPost() const {
     std::cout << "--------------------------\n";
 }
 
+void Post::display() const {
+    displayPost();
+}
 void Post::edit() {
 	std::cout << "Editing post..." << std::endl;
 }

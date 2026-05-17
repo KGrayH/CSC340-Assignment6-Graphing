@@ -2,6 +2,7 @@
 #include <iostream>
 #include <queue>
 #include <set>
+#include <climits>
 
 using namespace std;
 
@@ -150,6 +151,71 @@ void Graph::bellmanFord(int startId) {
     // 2. Loop |V|-1 times
     // 3. Relax all edges
     // 4. Detect negative cycle
+    if (users.find(startId) == users.end()) { //user exists checking
+        cout << "user doesn't exist" << endl;
+        return;
+    }
+
+    unordered_map<int, int> dist; //userId->distance
+
+    for (const auto& userPair : users) { //1. initialize distances
+        dist[userPair.first] = INT_MAX;
+    }
+
+    dist[startId] = 0;// distance from start user to self is 0
+
+    int numberOfUsers = users.size();    // 2. Loop |V|-1 times
+
+    for (int i = 1; i <= numberOfUsers - 1; i++) {
+        for (const auto& edgeList : adjList) {
+            int followerId = edgeList.first;
+
+            for (const auto& edge : edgeList.second) {     // 3. Relax all edges
+                int followeeId = edge.first;
+                int weight = edge.second;
+
+                if (dist[followerId] != INT_MAX && // update if a shorter path is found
+                    dist[followerId] + weight < dist[followeeId]) {
+                    dist[followeeId] = dist[followerId] + weight;
+                }
+            }
+        }
+    }
+
+    for (const auto& edgeList : adjList) {     // 4. Detect negative cycle
+        int followerId = edgeList.first;
+
+        for (const auto& edge : edgeList.second) {
+            int followeeId = edge.first;
+            int weight = edge.second;
+
+            if (dist[followerId] != INT_MAX &&
+                dist[followerId] + weight < dist[followeeId]) {
+                cout << "graph contains negative weight cycle" << endl;
+                return;
+            }
+        }
+    }
+
+    //print results
+    cout << "\nBellman-Ford shortest paths from User "
+         << startId << " (" << users[startId].getUsername() << "):" << endl;
+
+    for (const auto& userPair : users) {
+        int userId = userPair.first;
+
+        cout << "To User " << userId
+             << " (" << userPair.second.getUsername() << "): ";
+
+        if (dist[userId] == INT_MAX) {
+            cout << "unreachable";
+        }
+        else {
+            cout << "distance = " << dist[userId];
+        }
+
+        cout << endl;
+    }
 }
 
 // the topological sort of the graph, which will print the users in a linear order such that for every directed edge from user A to user B, user A comes before user B in the ordering. This is useful for understanding the hierarchy or influence among users in the graph.
