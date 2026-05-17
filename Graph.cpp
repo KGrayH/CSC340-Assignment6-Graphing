@@ -1,5 +1,8 @@
 #include "Graph.h"
 
+#include <iostream>
+#include <queue>
+#include <set>
 
 using namespace std;
 
@@ -17,31 +20,101 @@ void Graph::addFollowEdge(int followerId, int followeeId, int weight) {
 }
 
 // display the adjacency list of the graph - all users and their neighbors
-void Graph::displayGraph() const { }
+void Graph::displayGraph() const {
+
+    for (const auto& userPair : adjList) {
+
+        int userId = userPair.first;
+
+        cout << users.at(userId).getUsername() << " -> ";
+
+        for (const auto& neighbor : userPair.second) {
+
+            int neighborId = neighbor.first;
+            int weight = neighbor.second;
+
+            cout << "("
+                 << users.at(neighborId).getUsername()
+                 << ", weight: "
+                 << weight
+                 << ") ";
+        }
+
+        cout << endl;
+    }
+}
 
 void Graph::bfsSearch(int startId) {
-    // TODO:
-    // 1. Use queue<int>
-    // 2. Track visited using set<int> or unordered_set<int>
-    // 3. Print user names instead of IDs
+
+    if (users.find(startId) == users.end()) {
+        cout << "User does not exist." << endl;
+        return;
+    }
+
+    unordered_map<int, bool> visited;
+    queue<int> q;
+
+    visited[startId] = true;
+    q.push(startId);
+
+    cout << "BFS Traversal: ";
+
+    while (!q.empty()) {
+
+        int current = q.front();
+        q.pop();
+
+        cout << users[current].getUsername() << " ";
+
+        for (const auto& neighbor : adjList[current]) {
+
+            int neighborId = neighbor.first;
+
+            if (!visited[neighborId]) {
+
+                visited[neighborId] = true;
+                q.push(neighborId);
+            }
+        }
+    }
+
+    cout << endl;
 }
 
 // the DFS traversal starting from the user with startUserId and print the visited users in order.
-void dfsHelper(int current,
-               unordered_map<int, vector<pair<int,int>>>& adjList,
-               set<int>& visited,
-               unordered_map<int, User>& users) {
-    // TODO:
-    // 1. Mark visited
-    // 2. Print user name
-    // 3. Recurse on neighbors
+void Graph::dfsHelper(int currentUserId,
+                      unordered_map<int, bool>& visited) {
+
+    visited[currentUserId] = true;
+
+    cout << users[currentUserId].getUsername() << " ";
+
+    for (const auto& neighbor : adjList[currentUserId]) {
+
+        int neighborId = neighbor.first;
+
+        if (!visited[neighborId]) {
+
+            dfsHelper(neighborId, visited);
+        }
+    }
 }
 
 // Start the DFS search
 void Graph::dfsSearch(int startId) {
-    // TODO:
-    // Initialize visited to false, indicating that none is visited since the process is just starting
-    // Call helper method
+
+    if (users.find(startId) == users.end()) {
+        cout << "User does not exist." << endl;
+        return;
+    }
+
+    unordered_map<int, bool> visited;
+
+    cout << "DFS Traversal: ";
+
+    dfsHelper(startId, visited);
+
+    cout << endl;
 }
 
 // the Dijkstra's algorithm to find the shortest paths from the user with startUserId to all other users.
